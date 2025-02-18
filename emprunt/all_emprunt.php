@@ -213,16 +213,11 @@
                       <tbody>
 
                         <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "gestion_bibliotheque";
+                          require('../based.php');
 
-                        $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-                        if (!$conn) {
-                            die("Pas de connexion : " . mysqli_connect_error());
-                        }
+                          if (!$connection) {
+                              die("Pas de connexion : " . mysqli_connect_error());
+                          }
 
                         $sql = "SELECT 
                           emprunts.id_emprunt,
@@ -237,7 +232,7 @@
                           INNER JOIN etudiants ON emprunts.id_etudiant = etudiants.id_etudiant
                           INNER JOIN livres ON emprunts.id_livre = livres.id_livre";
 
-                        $result = mysqli_query($conn, $sql);
+                        $result = mysqli_query($connection, $sql);
 
                         if (mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
@@ -278,7 +273,7 @@
                         }
                         
                         // Fermeture de la connexion
-                        mysqli_close($conn);
+                        mysqli_close($connection);
                         ?>
                       </tbody>
                     </table>

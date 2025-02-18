@@ -1,13 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_bibliotheque";
+require('../based.php');
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-if (!$conn) {
-    die("Échec de connexion : " . mysqli_connect_error());
+if (!$connection) {
+    die("Échec de connexion à la base de données.");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -18,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $disponibilite = trim($_POST['disponibilite']);
 
     $sql = "UPDATE livres SET titre=?, auteur=?, localisation=?, resume=?, disponibilite=? WHERE titre=?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $connection->prepare($sql);
     $stmt->bind_param("ssssss", $titre, $auteur, $localisation, $resume, $disponibilite, $titre);
 
     if ($stmt->execute()) {
@@ -31,5 +26,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 
-$conn->close();
+$connection->close();
 ?>

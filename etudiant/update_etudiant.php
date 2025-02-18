@@ -1,13 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_bibliotheque";
+require('../based.php');
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-if (!$conn) {
-    die("Échec de connexion : " . mysqli_connect_error());
+if (!$connection) {
+    die("Échec de connexion à la base de données.");
 }
 
 if (isset($_POST['id'])) {
@@ -21,13 +16,13 @@ if (isset($_POST['id'])) {
 
     $sql = "UPDATE etudiants SET nom='$nom', prenom='$prenom', adresse='$adresse', email='$email', telephone='$telephone', classe='$classe' WHERE id_etudiant='$id'";
 
-    if (mysqli_query($conn, $sql)) {
+    if (mysqli_query($connection, $sql)) {
         header('Location: all_etudiant.php'); 
         exit();
     } else {
-        echo "Erreur : " . mysqli_error($conn);
+        echo "Erreur : " . mysqli_error($connection);
     }
 }
 
-mysqli_close($conn);
+mysqli_close($connection);
 ?>

@@ -1,15 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_bibliotheque";
+require('../based.php');
 
-// Connexion à la base de données
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Vérifier la connexion
-if ($conn->connect_error) {
-    die("Échec de la connexion : " . $conn->connect_error);
+if (!$connection) {
+    die("Échec de connexion à la base de données.");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Requête préparée
         $sql = "DELETE FROM emprunts WHERE id_emprunt=?";  
-        $stmt = $conn->prepare($sql);
+        $stmt = $connection->prepare($sql);
         $stmt->bind_param("i", $id);
 
         if ($stmt->execute()) {
@@ -35,5 +28,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conn->close();
+$connection->close();
 ?>

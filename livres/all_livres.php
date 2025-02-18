@@ -223,21 +223,14 @@
 
                       <tbody>
                         <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "gestion_bibliotheque";
+                        require('../based.php');
 
-                        // Création de la connexion
-                        $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-                        // Vérification de la connexion
-                        if (!$conn) {
+                        if (!$connection) {
                             die("Pas de connexion : " . mysqli_connect_error());
                         }
 
                         $sql = "SELECT * FROM livres";
-                        $result = mysqli_query($conn, $sql);
+                        $result = mysqli_query($connection, $sql);
 
                         if (mysqli_num_rows($result) > 0) {
                             // Affichage des livres disponibles
@@ -267,7 +260,7 @@
                             echo '<tr><td colspan="6" class="text-center">Aucun livre enregistré.</td></tr>';
                         }
 
-                        mysqli_close($conn);
+                        mysqli_close($connection);
                         ?>
                       </tbody>
                     </table>
@@ -314,27 +307,26 @@
       $("#addDisponibilite").val(disponibilite);
       $("#addResume").val(resume);
 
-
-      // Modifier l'action du formulaire pour la mise à jour
       $("form").attr("action", "update_livre.php");
       $("#addRowModal").modal("show");
     });
 
-    // Suppression
     $(".btn-delete").click(function () {
-      if (confirm("Voulez-vous vraiment supprimer ce livre ?")) {
+    if (confirm("Voulez-vous vraiment supprimer ce livre ?")) {
         let row = $(this).closest("tr");
-        let nom = row.find("td:eq(0)").text();
+        let titre = row.find("td:eq(0)").text().trim();
 
-        $.post("delete_livre.php", { nom: nom }, function (response) {
-          if (response === "success") {
-            row.remove();
-          } else {
-            alert("Erreur lors de la suppression !");
-          }
+        $.ajax({
+            type: "POST",
+            url: "delete_livre.php",
+            data: { titre: titre },
+            success: function(response) {
+                location.reload();
+            },
         });
-      }
+    }
     });
+
   });
 </script>
 

@@ -227,21 +227,14 @@
 
                       <tbody>
                         <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "gestion_bibliotheque";
+                        require('../based.php');
 
-                        // Création de la connexion
-                        $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-                        // Vérification de la connexion
-                        if (!$conn) {
+                        if (!$connection) {
                             die("Pas de connexion : " . mysqli_connect_error());
                         }
 
                         $sql = "SELECT * FROM etudiants";
-                        $result = mysqli_query($conn, $sql);
+                        $result = mysqli_query($connection, $sql);
 
                         if (mysqli_num_rows($result) > 0) {
                             // Affichage des logements disponibles
@@ -286,7 +279,7 @@
                         }
 
                         // Fermeture de la connexion
-                        mysqli_close($conn);
+                        mysqli_close($connection);
                         ?>
                       </tbody>
 
@@ -340,15 +333,20 @@
 
     $(".btn-delete").click(function () {
     if (confirm("Voulez-vous vraiment supprimer cet(tte) étudiant(e) ?")) {
-        let id = $(this).data("id");
+        let row = $(this).closest("tr");
+        let id = row.find("td:eq(0)").text().trim();
 
-        $.post("delete_etudiant.php", { id: id }, function (response) {
-            if (response.trim() === "success") {
+        $.ajax({
+            type: "POST",
+            url: "delete_etudiant.php",
+            data: { id: id },
+            success: function(response) {
                 location.reload();
-            }   
+            },
         });
     }
     });
+
   });
 </script>
 

@@ -14,29 +14,21 @@ if(isset($_POST['submit'])){
         exit();
     }
 
-    $db_host = 'localhost';
-    $db_user = 'root';
-    $db_pass = '';
-    $db_name = 'gestion_bibliotheque';
-
-    // Connexion à la base de données (ajout de la connexion)
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-    if($conn->connect_error){
-        die("Erreur de connexion à la base de données : " . $conn->connect_error);
+    if (!$connection) {
+        die("Erreur de connexion à la base de données.");
     }
 
-   // Insertion des données
-   $stmt = $conn->prepare("INSERT INTO livres (titre, auteur, localisation, resume, disponibilite) VALUES (?, ?, ?, ?, ?)");
+   $stmt = $connection->prepare("INSERT INTO livres (titre, auteur, localisation, resume, disponibilite) VALUES (?, ?, ?, ?, ?)");
    $stmt->bind_param("sssss", $titre, $auteur, $localisation, $resume, $disponibilite);
    
    if($stmt->execute()){
        header('Location: all_livres.php'); 
        exit();
    } else {
-       echo "Erreur lors de l'insertion : " . $conn->error;
+       echo "Erreur lors de l'insertion : " . $connection->error;
    }
 
    
-    $conn->close();
+    $connection->close();
 }
 ?>

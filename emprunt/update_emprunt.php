@@ -1,13 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_bibliotheque";
+require('../based.php');
 
-// Connexion à la base de données
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Échec de la connexion : " . $conn->connect_error);
+if (!$connection) {
+    die("Échec de connexion à la base de données.");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -37,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "UPDATE emprunts 
                 SET date_emprunt = ?, date_retour_prevue = ?, date_retour_effective = ? 
                 WHERE id_emprunt = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt = $connection->prepare($sql);
         if ($stmt === false) {
-            die("Erreur de préparation : " . $conn->error);
+            die("Erreur de préparation : " . $connection->error);
         }
 
         $stmt->bind_param("sssi", $date_emprunt, $date_retour_prevue, $date_retour_effective, $id_emprunt);
@@ -50,12 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $stmt->close();
 
-        // Si la date de retour effective correspond à la date prévue, mettre à jour la disponibilité du livre
         if ($date_retour_prevue === $date_retour_effective) {
             $update = "UPDATE livres SET disponibilite = 'Disponible' WHERE id_livre = ?";
-            $stmt2 = $conn->prepare($update);
+            $stmt2 = $connection->prepare($update);
             if ($stmt2 === false) {
-                die("Erreur de préparation : " . $conn->error);
+                die("Erreur de préparation : " . $connection->error);
             }
 
             $stmt2->bind_param("i", $id_livre);
@@ -75,5 +69,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conn->close();
+$connection->close();
 ?>

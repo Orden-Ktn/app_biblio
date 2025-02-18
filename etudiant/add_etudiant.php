@@ -163,7 +163,7 @@
                               <div class="col-md-6">
                                 <div class="form-group form-group-default">
                                   <label>Email</label>
-                                  <input id="addLieu" type="text" name="email" class="form-control" placeholder="Entrez l'email" required />
+                                  <input id="addLieu" type="email" name="email" class="form-control" placeholder="Entrez l'email" required />
                                 </div>
                               </div>
 

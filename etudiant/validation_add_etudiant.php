@@ -15,22 +15,14 @@ if(isset($_POST['submit'])){
         exit();
     }
 
-    // Connexion à la base de données
-    $db_host = 'localhost';
-    $db_user = 'root';
-    $db_pass = '';
-    $db_name = 'gestion_bibliotheque';
-
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-    
-    if($conn->connect_error){
-        die("Erreur de connexion à la base de données : " . $conn->connect_error);
+    if (!$connection) {
+        die("Erreur de connexion à la base de données.");
     }
 
-    $stmt = $conn->prepare("INSERT INTO etudiants (nom, prenom, adresse, email, telephone, classe) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $connection->prepare("INSERT INTO etudiants (nom, prenom, adresse, email, telephone, classe) VALUES (?, ?, ?, ?, ?, ?)");
     
     if(!$stmt){
-        die("Erreur de préparation : " . $conn->error);
+        die("Erreur de préparation : " . $connection->error);
     }
 
     $stmt->bind_param("ssssss", $nom, $prenom, $adresse, $email, $telephone, $classe);
@@ -44,6 +36,6 @@ if(isset($_POST['submit'])){
 
     // Fermeture
     $stmt->close();
-    $conn->close();
+    $connection->close();
 }
 ?>

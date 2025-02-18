@@ -1,21 +1,21 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_bibliotheque";
+session_start();
+require('../based.php');
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Échec de la connexion : " . $conn->connect_error);
+if (!$connection) {
+    die("Échec de connexion à la base de données : " . mysqli_connect_error());
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nom = $_POST["nom"];
+    $titre = $_POST["titre"];
 
-    $sql = "DELETE FROM livres WHERE nom=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $nom);
+    if (empty($_POST["titre"])) {
+        die("Erreur : Aucun titre fourni pour la suppression.");
+    }    
+
+    $sql = "DELETE FROM livres WHERE titre=?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("s", $titre);
 
     if ($stmt->execute()) {
         header('Location: all_livres.php'); 
@@ -23,9 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "error";
     }
-
+    
     $stmt->close();
 }
 
-$conn->close();
+$connection->close();
 ?>

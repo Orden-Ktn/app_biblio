@@ -15,34 +15,23 @@ if(isset($_POST['submit'])){
         exit();
     }
 
-    $db_host = 'localhost';
-    $db_user = 'root';
-    $db_pass = '';
-    $db_name = 'gestion_bibliotheque';
-
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-    if($conn->connect_error){
-        die("Erreur de connexion à la base de données : " . $conn->connect_error);
+    if (!$connection) {
+        die("Erreur de connexion à la base de données.");
     }
 
-    $stmt = $conn->prepare("INSERT INTO emprunts (date_emprunt, date_retour_prevue, id_livre, id_etudiant) VALUES (?, ?, ?, ?)");
+    $stmt = $connection->prepare("INSERT INTO emprunts (date_emprunt, date_retour_prevue, id_livre, id_etudiant) VALUES (?, ?, ?, ?)");
     
-    if(!$stmt){
-        die("Erreur de préparation de la requête : " . $conn->error);
-    }
-
     $stmt->bind_param("ssss", $date_emprunt, $date_retour_prevue, $id_livre, $id_etudiant);
 
     if($stmt->execute()){
-        $stmt_update = $conn->prepare("UPDATE livres SET disponibilite = 'Emprunté' WHERE id_livre = ?");
+        $stmt_update = $connection->prepare("UPDATE livres SET disponibilite = 'Emprunté' WHERE id_livre = ?");
         
         if($stmt_update){
             $stmt_update->bind_param("s", $id_livre);
             $stmt_update->execute();
             $stmt_update->close();
         } else {
-            echo "Erreur lors de la mise à jour du livre : " . $conn->error;
+            echo "Erreur lors de la mise à jour du livre : " . $connection->error;
         }
 
         // Redirection après succès
@@ -52,6 +41,6 @@ if(isset($_POST['submit'])){
         echo "Erreur lors de l'insertion : " . $stmt->error;
     }
 
-    $conn->close();
+    $connection->close();
 }
 ?>
